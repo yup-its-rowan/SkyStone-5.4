@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.BasePurePursuit;
 
 
-//import static com.company.Robot.*;
+//import static com.company.GyroRobot.*;
 import com.qualcomm.robotcore.util.Range;
 
 import org.opencv.core.Point;

@@ -30,6 +30,7 @@ public class PostNorthern extends OpMode {
         waffleTrapper.init(hardwareMap, gamepad1, gamepad2);
         v4b.init(hardwareMap, gamepad1, gamepad2);
         autoGrab.init(hardwareMap, gamepad1, gamepad2, false);
+        telemetry.speak("piss");
     }
 
     @Override

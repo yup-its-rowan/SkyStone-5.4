@@ -25,7 +25,7 @@ public class SouthernTele extends OpMode {
 
     @Override
     public void init() {
-        robotDrive.init(hardwareMap, gamepad1, gamepad2);
+        robotDrive.init(hardwareMap, gamepad1, gamepad2, telemetry);
         intake.init(hardwareMap, gamepad1);
         slides.init(hardwareMap, gamepad1, gamepad2);
         waffleTrapper.init(hardwareMap, gamepad1, gamepad2);
