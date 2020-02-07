@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
 
 import static org.firstinspires.ftc.teamcode.Yibbon.GyroAutoAngleTracker.getGyroAngle;
 
@@ -26,10 +27,11 @@ public class GyroDrive {
 
     private double g1lx = 0, g1ly = 0, g1rx = 0;
     private boolean g2lbutton = false, g1back = false, g1lb = false, g1rb = false;
+    private MotorCache flm, frm, blm, brm;
 
     public GyroDrive(){ }
 
-    public void init(HardwareMap hardwareMap, boolean encoderBool, boolean autoAngle){
+    public void init(HardwareMap hardwareMap, boolean autoAngle){
         fl = hardwareMap.dcMotor.get("fl");
         bl = hardwareMap.dcMotor.get("bl");
         fr = hardwareMap.dcMotor.get("fr");
@@ -143,10 +145,18 @@ public class GyroDrive {
             brPower/=7;
         }
 
-        fl.setPower(flPower);
-        fr.setPower(frPower);
-        bl.setPower(blPower);
-        br.setPower(brPower);
+        if (flm.cache(flPower)){
+            fl.setPower(flPower);
+        }
+        if (frm.cache(frPower)){
+            fr.setPower(frPower);
+        }
+        if (blm.cache(blPower)){
+            bl.setPower(blPower);
+        }
+        if (brm.cache(brPower)){
+            br.setPower(brPower);
+        }
 
     }
 

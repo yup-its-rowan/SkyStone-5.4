@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.GyroDrive
 
 import static org.firstinspires.ftc.teamcode.Yibbon.UsefulMath.AngleWrap;
 
-@TeleOp(name = "OdometryHeading", group = "eee")
+@TeleOp(name = "The Entire Bee Movie Script", group = "bee movie")
 public class OdometryHeading extends OpMode {
 
     GyroDrive gyroDrive = new GyroDrive();
@@ -22,7 +22,7 @@ public class OdometryHeading extends OpMode {
 
     @Override
     public void init() {
-        gyroDrive.init(hardwareMap, true, false);
+        gyroDrive.init(hardwareMap, false);
         l = hardwareMap.dcMotor.get("i1");
         r = hardwareMap.dcMotor.get("i2");
         m = hardwareMap.dcMotor.get("sr");

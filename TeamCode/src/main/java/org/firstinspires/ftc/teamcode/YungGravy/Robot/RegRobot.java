@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.YungGravy.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.YungGravy.RandomTelemetry;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.AutoGrabbers;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.RobotDrive;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Intake;

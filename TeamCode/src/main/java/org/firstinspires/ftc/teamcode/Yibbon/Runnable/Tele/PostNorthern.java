@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Yibbon.Subsystems.Slides;
 import org.firstinspires.ftc.teamcode.Yibbon.Subsystems.VirtualFourBar;
 import org.firstinspires.ftc.teamcode.Yibbon.Subsystems.WaffleTrapper;
 
-@TeleOp(name = "PostNorthern", group = "eee")
+//@TeleOp(name = "PostNorthern", group = "eee")
 public class PostNorthern extends OpMode {
 
     GyroDrive gyroDrive = new GyroDrive();

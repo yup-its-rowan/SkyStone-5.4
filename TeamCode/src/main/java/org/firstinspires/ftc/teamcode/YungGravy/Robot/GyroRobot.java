@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.YungGravy.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.YungGravy.RandomTelemetry;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.AutoGrabbers;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.GyroDrive;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Intake;
@@ -23,7 +22,7 @@ public class GyroRobot extends OpMode {
 
     @Override
     public void init() {
-        gyroDrive.init(hardwareMap, true, false);
+        gyroDrive.init(hardwareMap,false);
         intake.init(hardwareMap);
         slides.init(hardwareMap);
         waffleTrapper.init(hardwareMap);
