@@ -4,10 +4,15 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.YungGravy.ServoCache;
+
 public class VirtualFourBar {
 
     private Servo grab, v1, v2;
     private boolean g2dup = false, g2ddown = false, g2a = false, g2b = false;
+    private ServoCache grabc = new ServoCache();
+    private ServoCache v1c = new ServoCache();
+    private ServoCache v2c = new ServoCache();
 
 
     public VirtualFourBar(){
@@ -28,26 +33,50 @@ public class VirtualFourBar {
         grabToggle();
         v4b();
     }
-
+    private double v1pos = 0, v2pos = 0, grabpos = 0;
     private void v4b(){
-        if (g2dup){
-            v1.setPosition(0.9);
-            v2.setPosition(0.1);
-        } else if (g2ddown){
-            v1.setPosition(0.1);
-            v2.setPosition(0.9);
+        if (g2ddown){
+            v1pos = 0.9;
+            v2pos = 0.1;
+            if (v1c.cache(v1pos)){
+                v1.setPosition(v1pos);
+            }
+            if (v2c.cache(v2pos)){
+                v2.setPosition(v2pos);
+            }
+        } else if (g2dup){
+            v1pos = 0.1;
+            v2pos = 0.9;
+            if (v1c.cache(v1pos)){
+                v1.setPosition(v1pos);
+            }
+            if (v2c.cache(v2pos)){
+                v2.setPosition(v2pos);
+            }
         } else {
-            v1.setPosition(0.5);
-            v2.setPosition(0.5);
+            v1pos = 0.5;
+            v2pos = 0.5;
+            if (v1c.cache(v1pos)){
+                v1.setPosition(v1pos);
+            }
+            if (v2c.cache(v2pos)){
+                v2.setPosition(v2pos);
+            }
         }
     }
 
     private void grabToggle(){
         if (g2a){
-            grab.setPosition(0.3);
+            grabpos = 0.3;
+            if (grabc.cache(grabpos)){
+                grab.setPosition(grabpos);
+            }
             //grab
         } else if (g2b){
-            grab.setPosition(0.7);
+            grabpos = 0.7;
+            if (grabc.cache(grabpos)){
+                grab.setPosition(grabpos);
+            }
             //not grab
         }
     }

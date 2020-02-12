@@ -12,14 +12,17 @@ public class RobotMovement {
 
     public RobotMovement(){}
 
-    public void movementUpdate(double globalX, double globalY, double globalT, DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br){
+    public void motorSet(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br){
+        this.bl = bl;
+        this.br = br;
+        this.fl = fl;
+        this.fr = fr;
+    }
+
+    public void movementUpdate(double globalX, double globalY, double globalT){
         this.globalT = globalT;
         this.globalX = globalX;
         this.globalY = globalY;
-        this.fl = fl;
-        this.fr = fr;
-        this.bl = bl;
-        this.br = br;
     }
 
 
@@ -33,10 +36,11 @@ public class RobotMovement {
         double targetHeading;
 
         //optimizer
-        if (distanceToTarget < 5){ //five is arbritary i dont know how to spell that word
+        if (distanceToTarget < 5){ //five is arbitrary
             targetHeading = preferredHeading;
         } else {
-            targetHeading = (Math.atan2(targetY- globalY, targetX-globalX)) - Math.toRadians(90);
+            targetHeading = (Math.atan2(targetY- globalY, targetX-globalX))
+                    - Math.toRadians(90);
         }
 
         //deltas for stuff later
@@ -63,22 +67,21 @@ public class RobotMovement {
         double z2 = turnSpeed * snippedHeading;
 
         double flPower = x2 + y2 + z2;
-        double frPower = x2 - y2 + z2;
         double blPower = -x2 + y2 + z2;
+        double frPower = x2 - y2 + z2;
         double brPower = -x2 - y2 + z2;
 
         fl.setPower(flPower);
-        fr.setPower(frPower);
         bl.setPower(blPower);
+        fr.setPower(frPower);
         br.setPower(brPower);
     }
 
     int tickerFollow = 0;
-    public boolean followPath(ArrayList<Waypoint> allPoints ){
+
+    public boolean followPath(ArrayList<Waypoint> allPoints){
         if ((tickerFollow+1) < allPoints.size()){
-            if (inTriggerZone(allPoints.get(tickerFollow))){
-                tickerFollow+=1;
-            }
+            if (inTriggerZone(allPoints.get(tickerFollow))){ tickerFollow++;}
             Waypoint targetPoint = allPoints.get(tickerFollow);
             goToPosition2(targetPoint.x(), targetPoint.y(), targetPoint.targetAngle(),
                     targetPoint.moveSpeed(), targetPoint.turnSpeed());

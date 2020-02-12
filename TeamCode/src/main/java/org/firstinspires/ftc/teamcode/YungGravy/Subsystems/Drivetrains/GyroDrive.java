@@ -27,7 +27,10 @@ public class GyroDrive {
 
     private double g1lx = 0, g1ly = 0, g1rx = 0;
     private boolean g2lbutton = false, g1back = false, g1lb = false, g1rb = false;
-    private MotorCache flm, frm, blm, brm;
+    private MotorCache flm = new MotorCache();
+    private MotorCache frm = new MotorCache();
+    private MotorCache blm = new MotorCache();
+    private MotorCache brm = new MotorCache();
 
     public GyroDrive(){ }
 
@@ -191,10 +194,18 @@ public class GyroDrive {
             brPower/=7;
         }
 
-        fl.setPower(flPower);
-        fr.setPower(frPower);
-        bl.setPower(blPower);
-        br.setPower(brPower);
+        if (flm.cache(flPower)){
+            fl.setPower(flPower);
+        }
+        if (frm.cache(frPower)){
+            fr.setPower(frPower);
+        }
+        if (blm.cache(blPower)){
+            bl.setPower(blPower);
+        }
+        if (brm.cache(brPower)){
+            br.setPower(brPower);
+        }
 
     }
 

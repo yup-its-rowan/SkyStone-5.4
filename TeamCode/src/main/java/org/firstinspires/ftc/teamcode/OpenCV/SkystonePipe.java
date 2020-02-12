@@ -54,13 +54,13 @@ public class SkystonePipe extends OpenCvPipeline {
     }
 
     @Override
-    public Mat processFrame(Mat input) {
+    public Mat processFrame(Mat mat) {
         contoursList.clear();
 
         //color diff cb.
         //lower cb = more blue = skystone = white
         //higher cb = less blue = yellow stone = grey
-        Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);//converts rgb to ycrcb
+        Imgproc.cvtColor(mat, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);
         Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2);//takes cb difference and stores
 
         //b&w
@@ -73,19 +73,22 @@ public class SkystonePipe extends OpenCvPipeline {
 
 
         //get values from frame
-        double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[1]), (int)(input.cols()* midPos[0]));//gets value at circle
+        double[] pixMid = thresholdMat.get((int)(mat.rows()* midPos[1]),
+                (int)(mat.cols()* midPos[0]));//gets value at circle
         valMid = (int)pixMid[0];
 
-        double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[1]), (int)(input.cols()* leftPos[0]));//gets value at circle
+        double[] pixLeft = thresholdMat.get((int)(mat.rows()* leftPos[1]),
+                (int)(mat.cols()* leftPos[0]));//gets value at circle
         valLeft = (int)pixLeft[0];
 
-        double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
+        double[] pixRight = thresholdMat.get((int)(mat.rows()* rightPos[1]),
+                (int)(mat.cols()* rightPos[0]));//gets value at circle
         valRight = (int)pixRight[0];
 
         //create three points
-        Point pointMid = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
-        Point pointLeft = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
-        Point pointRight = new Point((int)(input.cols()* rightPos[0]), (int)(input.rows()* rightPos[1]));
+        Point pointMid = new Point((int)(mat.cols()* midPos[0]), (int)(mat.rows()* midPos[1]));
+        Point pointLeft = new Point((int)(mat.cols()* leftPos[0]), (int)(mat.rows()* leftPos[1]));
+        Point pointRight = new Point((int)(mat.cols()* rightPos[0]), (int)(mat.rows()* rightPos[1]));
 
         //draw circles on those points
         Imgproc.circle(all, pointMid,5, new Scalar( 255, 0, 0 ),1 );//draws circle
@@ -96,29 +99,29 @@ public class SkystonePipe extends OpenCvPipeline {
         Imgproc.rectangle(//1-3
                 all,
                 new Point(
-                        input.cols()*(leftPos[0]-rectWidth/2),
-                        input.rows()*(leftPos[1]-rectHeight/2)),
+                        mat.cols()*(leftPos[0]-rectWidth/2),
+                        mat.rows()*(leftPos[1]-rectHeight/2)),
                 new Point(
-                        input.cols()*(leftPos[0]+rectWidth/2),
-                        input.rows()*(leftPos[1]+rectHeight/2)),
+                        mat.cols()*(leftPos[0]+rectWidth/2),
+                        mat.rows()*(leftPos[1]+rectHeight/2)),
                 new Scalar(0, 255, 0), 3);
         Imgproc.rectangle(//3-5
                 all,
                 new Point(
-                        input.cols()*(midPos[0]-rectWidth/2),
-                        input.rows()*(midPos[1]-rectHeight/2)),
+                        mat.cols()*(midPos[0]-rectWidth/2),
+                        mat.rows()*(midPos[1]-rectHeight/2)),
                 new Point(
-                        input.cols()*(midPos[0]+rectWidth/2),
-                        input.rows()*(midPos[1]+rectHeight/2)),
+                        mat.cols()*(midPos[0]+rectWidth/2),
+                        mat.rows()*(midPos[1]+rectHeight/2)),
                 new Scalar(0, 255, 0), 3);
         Imgproc.rectangle(//5-7
                 all,
                 new Point(
-                        input.cols()*(rightPos[0]-rectWidth/2),
-                        input.rows()*(rightPos[1]-rectHeight/2)),
+                        mat.cols()*(rightPos[0]-rectWidth/2),
+                        mat.rows()*(rightPos[1]-rectHeight/2)),
                 new Point(
-                        input.cols()*(rightPos[0]+rectWidth/2),
-                        input.rows()*(rightPos[1]+rectHeight/2)),
+                        mat.cols()*(rightPos[0]+rectWidth/2),
+                        mat.rows()*(rightPos[1]+rectHeight/2)),
                 new Scalar(0, 255, 0), 3);
 
         switch (visibleStage) {
@@ -134,12 +137,12 @@ public class SkystonePipe extends OpenCvPipeline {
 
             case RAW_IMAGE:
             {
-                return input;
+                return mat;
             }
 
             default:
             {
-                return input;
+                return mat;
             }
         }
     }

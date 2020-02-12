@@ -29,7 +29,7 @@ public class Recorder extends OpMode {
 
     stateToggleWaffleTrapper toggleWaffleTrapper = stateToggleWaffleTrapper.trapperUp;
 
-    String pee;
+    String data;
     int ticker = 0;
     ElapsedTime runTime = new ElapsedTime();
     ElapsedTime eTimerecord = new ElapsedTime();
@@ -178,24 +178,24 @@ public class Recorder extends OpMode {
 
     public void joinText(){
         for(int i = 0;i < y.length;i++){
-            pee+=y[i]+ "\n";
-            pee+=a[i]+ "\n";
-            pee+=b[i]+ "\n";
-            pee+=x[i]+ "\n";
-            pee+=xLeft[i]+ "\n";
-            pee+=xRight[i]+ "\n";
-            pee+=yLeft[i]+ "\n";
-            pee+=yRight[i]+ "\n";
-            pee+=lStick[i]+ "\n";
-            pee+=rStick[i]+ "\n";
-            pee+=ddown[i]+ "\n";
-            pee+=dup[i]+ "\n";
-            pee+=dleft[i]+ "\n";
-            pee+=dright[i]+ "\n";
-            pee+=lButton[i]+ "\n";
-            pee+=rButton[i]+ "\n";
-            pee+=lTrigg[i]+ "\n";
-            pee+=rTrigg[i]+ "\n";
+            data +=y[i]+ "\n";
+            data +=a[i]+ "\n";
+            data +=b[i]+ "\n";
+            data +=x[i]+ "\n";
+            data +=xLeft[i]+ "\n";
+            data +=xRight[i]+ "\n";
+            data +=yLeft[i]+ "\n";
+            data +=yRight[i]+ "\n";
+            data +=lStick[i]+ "\n";
+            data +=rStick[i]+ "\n";
+            data +=ddown[i]+ "\n";
+            data +=dup[i]+ "\n";
+            data +=dleft[i]+ "\n";
+            data +=dright[i]+ "\n";
+            data +=lButton[i]+ "\n";
+            data +=rButton[i]+ "\n";
+            data +=lTrigg[i]+ "\n";
+            data +=rTrigg[i]+ "\n";
         }
     }
 
@@ -208,9 +208,8 @@ public class Recorder extends OpMode {
             }
 
             File filepath = new File(rooty, "beant.txt");
-
             FileWriter writer = new FileWriter(filepath);
-            writer.append(pee);
+            writer.append(data);
             writer.flush();
             writer.close();
 

@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.YungGravy.Runnable.Tele;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.YungGravy.RandomTelemetry;
 import org.firstinspires.ftc.teamcode.YungGravy.Robot.GyroRobot;
 
 @TeleOp(name = "RoadToStates", group = "eee")
-public class Road2States extends GyroRobot {
+public class RoadToStates extends GyroRobot {
 
     String teleMessage = RandomTelemetry.RandomTelemetry();
     ElapsedTime eTimee = new ElapsedTime();

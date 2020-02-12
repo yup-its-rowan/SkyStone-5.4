@@ -5,12 +5,17 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
 
 public class RobotDrive {
     private DcMotor fl, fr, bl, br;
     double flPower, frPower, blPower, brPower;
     private double g1lx = 0, g1ly = 0, g1rx = 0;
     private boolean g1lb = false, g1rb = false;
+    private MotorCache flm = new MotorCache();
+    private MotorCache frm = new MotorCache();
+    private MotorCache blm = new MotorCache();
+    private MotorCache brm = new MotorCache();
 
     public RobotDrive(){
     }
@@ -89,9 +94,17 @@ public class RobotDrive {
             brPower/=7;
         }
 
-        fl.setPower(flPower);
-        fr.setPower(frPower);
-        bl.setPower(blPower);
-        br.setPower(brPower);
+        if (flm.cache(flPower)){
+            fl.setPower(flPower);
+        }
+        if (frm.cache(frPower)){
+            fr.setPower(frPower);
+        }
+        if (blm.cache(blPower)){
+            bl.setPower(blPower);
+        }
+        if (brm.cache(brPower)){
+            br.setPower(brPower);
+        }
     }
 }

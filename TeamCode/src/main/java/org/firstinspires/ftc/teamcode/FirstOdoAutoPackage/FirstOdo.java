@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.FirstOdoAutoPackage;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class FirstOdo {
@@ -15,14 +14,15 @@ public class FirstOdo {
 
     double localDeltaX, localDeltaY;
     double globalDeltaX = 0, globalDeltaY = 0;
-    double theta;
+
     double WIDTH_BETWEEN_ENCODERS = 12.825;
     double OFFSET_OF_MIDDLE_WHEEL;
     int COUNTS_PER_REV = 8192;
     double WHEEL_DIAMETER =  1.96;
 
-    double globalX = 0;
-    double globalY = 0;
+    public static double globalX = 0;
+    public static double globalY = 0;
+    public static double heading = 0;
 
 
 
@@ -57,44 +57,36 @@ public class FirstOdo {
         r3 = right.getCurrentPosition();
         m3 = middle.getCurrentPosition();
 
-        theta = robotHeading();
+        heading = robotHeading();
 
         deltal = l3 - l2;
         deltar = r3 - r2;
         deltam = m3 - m2;
 
+        double localDeltaYf = ((deltal+deltar)/2);
         localDeltaX = ticksToInches(deltam);
-        localDeltaY = ticksToInches(localDeltaYf());
+        localDeltaY = ticksToInches(localDeltaYf);
 
-        globalDelta();
+        globalDeltaX = ((localDeltaX*Math.cos(heading))+(localDeltaY*Math.sin(heading)));
+        globalDeltaY = ((localDeltaY*Math.cos(heading))-(localDeltaX*Math.sin(heading)));
 
         globalX =+ globalDeltaX;
         globalY =+ globalDeltaY;
-
 
         reset();
     }
 
     public double robotHeading(){
-        double temp = ((ticksToInches(l3)-ticksToInches(r3))/WIDTH_BETWEEN_ENCODERS);
+        double temp = ((ticksToInches(l3)-ticksToInches(r3))
+                /WIDTH_BETWEEN_ENCODERS);
         return temp;
     }
 
-
-    public double localDeltaYf(){
-        double temp = ((deltal+deltar)/2);
-        return temp;
-    }
 
     public double ticksToInches(double ticks){
         double temp = (ticks*Math.PI*WHEEL_DIAMETER);
         double temp2 = temp/COUNTS_PER_REV;
         return temp2;
-    }
-
-    public void globalDelta(){
-        globalDeltaX = ((localDeltaX*Math.cos(theta))+(localDeltaY*Math.sin(theta)));
-        globalDeltaY = ((localDeltaY*Math.cos(theta))-(localDeltaX*Math.sin(theta)));
     }
 
     public void reset(){

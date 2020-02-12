@@ -37,6 +37,8 @@ public class ParkAuto extends OpMode {
         odo.odoReset(ol, or, h);
         odo.setGlobalX(0);
         odo.setGlobalY(0);
+
+        movement.motorSet(fl, fr, bl, br);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class ParkAuto extends OpMode {
     @Override
     public void loop() {
         odo.odoloop();
-        movement.movementUpdate(odo.getGlobalX(), odo.getGlobalY(), odo.getHeading(), fl, fr, bl, br);
+        movement.movementUpdate(odo.getGlobalX(), odo.getGlobalY(), odo.getHeading());
 
         if (eTime2.time() > waitTime) {
             switch (autoPath) {

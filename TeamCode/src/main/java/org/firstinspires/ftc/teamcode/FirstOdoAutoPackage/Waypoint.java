@@ -5,7 +5,8 @@ public class Waypoint {
     private double xPoint, yPoint, triggerRadius, moveSpeed, turnSpeed;
     private double targetAngle = 400;
 
-    public Waypoint(double x, double y, double triggerRadius, double moveSpeed, double turnSpeed, double targetAngle){
+    public Waypoint(double x, double y, double triggerRadius,
+                    double moveSpeed, double turnSpeed, double targetAngle){
         this.xPoint = x;
         this.yPoint = y;
         this.triggerRadius = triggerRadius;

@@ -105,7 +105,8 @@ public class TuningButSmart extends OpMode {
                         this.finalencoders = this.widthOfEncoders;
                     }
                     telemetry.addData("heading", pose);
-                    double temp = (ticksToInches(ol.getCurrentPosition()) - ticksToInches(or.getCurrentPosition()));
+                    double temp = (ticksToInches(ol.getCurrentPosition())
+                            - ticksToInches(or.getCurrentPosition()));
                     this.widthOfEncoders = (temp/pose);
                     telemetry.addData("Track Width", this.widthOfEncoders);
                     break;
