@@ -12,7 +12,7 @@ public class TransitionTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        AutoTeleTransition.teleOnStop(this, "RoadToStatesReg");
+        AutoTeleTransition.teleOnStop(this, "RoadToStates");
 
         waitForStart();
         sleep(2000);

@@ -13,6 +13,7 @@ public class Slides {
     private DcMotor s1, s2;
     private DigitalChannel slideSwitch;
     private double g2rt = 0, g2lt = 0;
+    private boolean g2dl = false, g2dr = false;
     private MotorCache s1m = new MotorCache();
     private MotorCache s2m = new MotorCache();
 
@@ -31,19 +32,22 @@ public class Slides {
         s2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void slideInputs(double g2rt, double g2lt, Telemetry telemetry){
+    public void slideInputs(double g2rt, double g2lt, boolean g2dl, boolean g2dr, Telemetry telemetry){
         this.g2lt = g2lt;
         this.g2rt = g2rt;
-        slideCheck();
+        this.g2dl = g2dl;
+        this.g2dr = g2dr;
+        slideCheck(telemetry);
     }
 
     int zeroPoint = 0;
     private double s1P = 0;
     private double s2P = 0;
 
-    public void slideCheck(){
 
-        double SLIDE_MAX_HEIGHT = 5780;
+    public void slideCheck(Telemetry telemetry){
+
+        double SLIDE_MAX_HEIGHT = 1200;
         if (g2rt > 0.1){
             if (slideHeight() < SLIDE_MAX_HEIGHT){
                 //up
@@ -60,8 +64,8 @@ public class Slides {
             s1P = -0.5;
             s2P = 0.5;
             if (slideHeight() < 300){
-                s1P = -0.3;
-                s2P = 0.3;
+                s1P = -0.2;
+                s2P = 0.2;
             }
             if (s1m.cache(s1P)){
                 s1.setPower(s1P);
@@ -71,10 +75,24 @@ public class Slides {
             }
 
         } else{
-            s1P = 0;
-            s2P = 0;
 
             //ADJUSTMENT CODE HERE
+            if (slideHeight() < 500){
+                s1P = 0.0;
+                s2P = 0.0;
+            } else if (slideHeight() < 900){
+                s1P = 0.08;
+                s2P = -0.08;
+            } else if (slideHeight() >= 900){
+                s1P = 0.09;
+                s2P = -0.09;
+            }
+
+
+            telemetry.addData("slide power l", s1P);
+            telemetry.addData("slide power 2", s2P);
+            telemetry.addData("slidecoders", slideHeight());
+
 
             if (s1m.cache(s1P)){
                 s1.setPower(s1P);

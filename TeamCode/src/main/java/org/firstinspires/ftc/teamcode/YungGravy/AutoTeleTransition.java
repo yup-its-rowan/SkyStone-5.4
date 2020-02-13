@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.YungGravy;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.internal.android.dex.util.ExceptionWithContext;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
 
 public class AutoTeleTransition extends Thread {
@@ -23,7 +22,7 @@ public class AutoTeleTransition extends Thread {
             while (true){
                 synchronized (this){
                     if (opMode != null && opModeManager.getActiveOpMode() != opMode){
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                         opModeManager.initActiveOpMode(nameOfTele);
                         this.opModeManager = null;
                         this.opMode = null;
@@ -43,6 +42,19 @@ public class AutoTeleTransition extends Thread {
             this.opMode = opMode;
             this.opModeManager = (OpModeManagerImpl) opMode.internalOpModeServices;
         }
+    }
+
+    public static void holdValue(double value){
+        BLANK.setValue(value);
+    }
+
+    public double value = 0;
+    private void setValue(double value){
+        this.value = value;
+    }
+
+    public static double getValue(){
+        return BLANK.value;
     }
 
     public static void teleOnStop(OpMode opMode, String nameOfTele){

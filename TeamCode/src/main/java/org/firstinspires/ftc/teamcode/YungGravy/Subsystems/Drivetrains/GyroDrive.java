@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,15 +9,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.YungGravy.AutoTeleTransition;
 import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
-
-import static org.firstinspires.ftc.teamcode.Yibbon.GyroAutoAngleTracker.getGyroAngle;
 
 public class GyroDrive {
 
     private DcMotor fl, fr, bl, br;
     private double pose, x2, y2, flPower, frPower, blPower, brPower;
-    public double offsetAngle = 0;
+    public double offsetAngle = 0, startingAngle = 0;
     private double time, timeSlowReset = 0;
     public BNO055IMU imu;
     public Orientation angles;
@@ -52,7 +50,10 @@ public class GyroDrive {
         parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
         this.autoAngle = autoAngle;
+        this.offsetAngle = 0;
+        this.startingAngle = AutoTeleTransition.getValue();
         resetEncoders();
         runUsingEncoder();
     }
@@ -69,13 +70,6 @@ public class GyroDrive {
         fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void runWithoutEncoders(){
-        fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void leftStickBut2EncoderReset(){
@@ -95,7 +89,7 @@ public class GyroDrive {
         this.g1rb = g1rb;
 
         if (this.autoAngle == true){
-            weBeDrivin();
+            weBeDrivin(telemetry);
         } else {
             weBeDrivin2();
         }
@@ -103,7 +97,7 @@ public class GyroDrive {
             leftStickBut2EncoderReset();
         }
 
-        telemetryDT(telemetry);
+        //telemetryDT(telemetry);
     }
 
     public void enableTelemetry(){
@@ -117,10 +111,11 @@ public class GyroDrive {
         telemetry.addData("br", br.getCurrentPosition());
     }
 
-    public void weBeDrivin(){
+    public void weBeDrivin(Telemetry telemetry){
         this.angles   = imu.getAngularOrientation(AxesReference.INTRINSIC,
                 AxesOrder.ZYX, AngleUnit.RADIANS);
-        this.pose = (angles.firstAngle - this.offsetAngle - getGyroAngle());
+        telemetry.addData("startingAngle", this.startingAngle);
+        this.pose = (angles.firstAngle - this.offsetAngle + this.startingAngle);
         if (time > (timeSlowReset + 0.2)){
             if (this.g1back){
                 this.offsetAngle = this.pose;

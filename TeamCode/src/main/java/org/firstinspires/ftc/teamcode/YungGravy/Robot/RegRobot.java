@@ -36,7 +36,7 @@ public class RegRobot extends OpMode {
         robotDrive.driveInputs(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x,
                 gamepad1.left_bumper, gamepad1.right_bumper, telemetry);
         intake.intakeInputs(eTime.time(), gamepad1.x, gamepad1.y);
-        slides.slideInputs(gamepad2.left_trigger, gamepad2.right_trigger, telemetry);
+        slides.slideInputs(gamepad2.left_trigger, gamepad2.right_trigger, gamepad2.dpad_left, gamepad2.dpad_right, telemetry);
         waffleTrapper.waffleTrapperInputs(gamepad1.dpad_down, gamepad1.dpad_up);
         v4b.v4bInputs(gamepad2.dpad_up, gamepad2.dpad_down, gamepad2.a, gamepad2.b);
         //autoGrab.autoGrabInputs(gamepad2.a, gamepad2.b, gamepad2.x, gamepad2.y);

@@ -68,8 +68,8 @@ public class Intake {
                     timeIntakeToggle = time;}
                     break;
                 case intakeOn:
-                    i1Power = 1;
-                    i2Power = -1;
+                    i1Power = 0.9;
+                    i2Power = -0.9;
                     if (i1c.cache(i1Power)){
                         i1.setPower(i1Power);
                     }
