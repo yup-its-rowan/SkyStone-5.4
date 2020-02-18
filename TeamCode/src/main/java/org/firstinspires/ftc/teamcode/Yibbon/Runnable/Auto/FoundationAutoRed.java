@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import static org.firstinspires.ftc.teamcode.Yibbon.GyroAutoAngleTracker.saveGyroAngle;
 
-@Autonomous(name = "foundationAndParkRed", group = "foundationPark")
+//@Autonomous(name = "foundationAndParkRed", group = "foundationPark")
 public class FoundationAutoRed extends LinearOpMode {
 
     DcMotorEx fl, fr, bl, br;

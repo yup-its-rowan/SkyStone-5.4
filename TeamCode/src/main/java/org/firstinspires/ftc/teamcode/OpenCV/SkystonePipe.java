@@ -53,6 +53,8 @@ public class SkystonePipe extends OpenCvPipeline {
         visibleStage = stages[nextFilter];
     }
 
+
+
     @Override
     public Mat processFrame(Mat mat) {
         contoursList.clear();

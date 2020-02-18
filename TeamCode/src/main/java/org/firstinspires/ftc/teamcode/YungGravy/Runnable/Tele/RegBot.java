@@ -17,6 +17,7 @@ public class RegBot extends RegRobot {
         super.init();
     }
 
+
     @Override
     public void loop() {
         super.loop();

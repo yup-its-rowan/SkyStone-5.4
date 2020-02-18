@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@Autonomous(name = "5795", group= "eee")
+//@Autonomous(name = "5795", group= "eee")
 public class ParkAutoSouthern5795 extends LinearOpMode {
     DcMotorEx fl, fr, bl, br;
 

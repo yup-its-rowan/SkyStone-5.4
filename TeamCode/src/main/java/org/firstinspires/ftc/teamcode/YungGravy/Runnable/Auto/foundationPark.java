@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.YungGravy.AutoTeleTransition;
 
 import static org.firstinspires.ftc.teamcode.Yibbon.GyroAutoAngleTracker.saveGyroAngle;
 
-@Autonomous(name = "flexOnbees", group = "come on")
-public class flexOnbees extends LinearOpMode {
+@Autonomous(name = "foundationOnbees", group = "come on")
+public class foundationPark extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation angles;
@@ -45,15 +45,34 @@ public class flexOnbees extends LinearOpMode {
 
         waitForStart();
 
-        goForward(100, 0.3);
-        goRight(-400, 0.3);
-        turn(400, 0.3);
+        goRight(-300, 0.3);
+        goForward(inchesToTicks(30), 0.3);
+        goForward(inchesToTicks(-15), 0.3);
+        turn(-330, 0.3);
+        goForward(inchesToTicks(10), 0.3);
+        goForward(inchesToTicks(-47), 0.3);
+        turn(700, 0.3);
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double pose = angles.firstAngle;
         telemetry.addData("endingAngle", pose);
         telemetry.update();
         AutoTeleTransition.holdValue(pose);
+
+    }
+
+    public int inchesToTicks(double inches){
+
+        double inchesPerRotation = 2.952*Math.PI;
+        double ticksPerRotation = 336;
+
+        double ticksPerInch = ticksPerRotation/inchesPerRotation;
+
+        double temp = ticksPerInch*inches;
+
+        int ticky = (int)temp;
+
+        return ticky;
     }
 
     public void goForward(int gofron, double power){

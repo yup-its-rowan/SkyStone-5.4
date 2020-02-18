@@ -17,6 +17,12 @@ public class RoadToStates extends GyroRobot {
     }
 
     @Override
+    public void init_loop(){super.init_loop();}
+
+    @Override
+    public void start(){super.start();}
+
+    @Override
     public void loop() {
         super.loop();
         telemetry.addData("", this.teleMessage);
