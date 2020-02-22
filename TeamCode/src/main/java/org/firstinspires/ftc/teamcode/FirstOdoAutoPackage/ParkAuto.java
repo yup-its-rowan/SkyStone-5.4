@@ -13,7 +13,7 @@ public class ParkAuto extends OpMode {
     private DcMotor fl, fr, bl, br, ol, or, h;
 
     private RobotMovement movement = new RobotMovement();
-    private FirstOdo odo = new FirstOdo(null, null, null);
+    private FirstOdo odo = new FirstOdo();
     private ElapsedTime eTime = new ElapsedTime();
     private ElapsedTime eTime2 = new ElapsedTime();
     private double waitTime = 0;
@@ -34,11 +34,11 @@ public class ParkAuto extends OpMode {
         or = hardwareMap.dcMotor.get("i2");
         h = hardwareMap.dcMotor.get("sr");
 
-        odo.odoReset(ol, or, h);
+        odo.init(hardwareMap);
         odo.setGlobalX(0);
         odo.setGlobalY(0);
 
-        movement.motorSet(fl, fr, bl, br);
+        movement.motorSet(hardwareMap);
     }
 
     @Override
@@ -99,7 +99,6 @@ public class ParkAuto extends OpMode {
     @Override
     public void loop() {
         odo.odoloop();
-        movement.movementUpdate(odo.getGlobalX(), odo.getGlobalY(), odo.getHeading());
 
         if (eTime2.time() > waitTime) {
             switch (autoPath) {

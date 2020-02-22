@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.FirstOdoAutoPackage;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class FirstOdo {
 
@@ -8,6 +9,7 @@ public class FirstOdo {
     int deltal, deltar, deltam;
     int l2 = 0, r2 = 0, m2 = 0;
     int l3 = 0, r3 = 0, m3 = 0;
+    double oldHeading = 0;
     //fl is left encoder
     //fr is right encoder
     //bl is middle encoder
@@ -16,7 +18,7 @@ public class FirstOdo {
     double globalDeltaX = 0, globalDeltaY = 0;
 
     double WIDTH_BETWEEN_ENCODERS = 12.825;
-    double OFFSET_OF_MIDDLE_WHEEL;
+    double TICKS_PER_RADIAN;
     int COUNTS_PER_REV = 8192;
     double WHEEL_DIAMETER =  1.96;
 
@@ -26,20 +28,12 @@ public class FirstOdo {
 
 
 
-    public FirstOdo(DcMotor l, DcMotor r, DcMotor m){this.left = l; this.right = r; this.middle = m;}
+    public FirstOdo(){}
 
-    public void odoReset(DcMotor fl, DcMotor fr, DcMotor bl){this.left = fl; this.right = fr; this.middle = bl;}
-
-    public  double getGlobalX(){
-        return globalX;
-    }
-
-    public double getGlobalY(){
-        return globalY;
-    }
-
-    public double getHeading(){
-        return robotHeading();
+    public void init(HardwareMap hardwareMap){
+        this.left = hardwareMap.dcMotor.get("i1");
+        this.right = hardwareMap.dcMotor.get("i2");
+        this.middle = hardwareMap.dcMotor.get("sl");
     }
 
     public void setGlobalX(double X){
@@ -50,21 +44,21 @@ public class FirstOdo {
         this.globalY = Y;
     }
 
-
-
     public void odoloop() {
         l3 = left.getCurrentPosition();
         r3 = right.getCurrentPosition();
         m3 = middle.getCurrentPosition();
 
         heading = robotHeading();
+        double deltaHeading = heading - oldHeading;
 
         deltal = l3 - l2;
         deltar = r3 - r2;
         deltam = m3 - m2;
 
         double localDeltaYf = ((deltal+deltar)/2);
-        localDeltaX = ticksToInches(deltam);
+        double adjustedDeltaXf =  deltam - deltaHeading*TICKS_PER_RADIAN;
+        localDeltaX = ticksToInches(adjustedDeltaXf);
         localDeltaY = ticksToInches(localDeltaYf);
 
         globalDeltaX = ((localDeltaX*Math.cos(heading))+(localDeltaY*Math.sin(heading)));
@@ -77,8 +71,7 @@ public class FirstOdo {
     }
 
     public double robotHeading(){
-        double temp = ((ticksToInches(l3)-ticksToInches(r3))
-                /WIDTH_BETWEEN_ENCODERS);
+        double temp = ((ticksToInches(l3)-ticksToInches(r3)) /WIDTH_BETWEEN_ENCODERS);
         return temp;
     }
 
@@ -93,6 +86,7 @@ public class FirstOdo {
         l2 = l3;
         r2 = r3;
         m2 = m3;
+        oldHeading = heading;
     }
 
 }

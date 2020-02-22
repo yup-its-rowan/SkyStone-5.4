@@ -11,7 +11,7 @@ public class MovementTest extends OpMode {
     DcMotor fl, fr, bl, br;
 
     RobotMovement movement = new RobotMovement();
-    FirstOdo odo = new FirstOdo(null, null, null);
+    FirstOdo odo = new FirstOdo();
     ArrayList<Waypoint> path = new ArrayList<>();
 
     @Override
@@ -21,10 +21,10 @@ public class MovementTest extends OpMode {
         fr = hardwareMap.dcMotor.get("fr");
         br = hardwareMap.dcMotor.get("br");
 
-        odo.odoReset(fl,fr, bl);
+        odo.init(hardwareMap);  ;
         odo.setGlobalX(0);
         odo.setGlobalY(0);
-        movement.motorSet(fl, fr, bl, br);
+        movement.motorSet(hardwareMap);
 
         path.add(new Waypoint(0,0,2, 1, 1));
         path.add(new Waypoint(8,10,2, 1, 1,
@@ -35,7 +35,6 @@ public class MovementTest extends OpMode {
     @Override
     public void loop() {
         odo.odoloop();
-        movement.movementUpdate(odo.globalX, odo.globalY, odo.heading);
         movement.followPath(path);
     }
 }

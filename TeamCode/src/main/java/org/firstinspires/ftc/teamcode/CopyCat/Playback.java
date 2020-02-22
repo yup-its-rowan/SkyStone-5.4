@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 import android.os.Environment;
 
-@Autonomous(name = "PlaybackAuto", group = "PicturePerfect")
+//@Autonomous(name = "PlaybackAuto", group = "PicturePerfect")
 public class Playback extends OpMode {
 
 

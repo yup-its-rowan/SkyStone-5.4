@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-@TeleOp(name = "Recorder", group = "PicturePerfect")
+//@TeleOp(name = "Recorder", group = "PicturePerfect")
 public class Recorder extends OpMode {
 
     private DcMotor fl,fr,bl,br, i1, i2;

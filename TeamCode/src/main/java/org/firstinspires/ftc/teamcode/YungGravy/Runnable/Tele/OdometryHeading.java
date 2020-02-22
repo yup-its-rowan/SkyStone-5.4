@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.GyroDrive;
 
-import static org.firstinspires.ftc.teamcode.Yibbon.UsefulMath.AngleWrap;
+import static org.firstinspires.ftc.teamcode.YungGravy.UsefulMath.AngleWrap;
 
 @TeleOp(name = "The Entire Bee Movie Script", group = "bee movie")
 public class OdometryHeading extends OpMode {
@@ -18,14 +18,14 @@ public class OdometryHeading extends OpMode {
     GyroDrive gyroDrive = new GyroDrive();
     ElapsedTime eTime = new ElapsedTime();
     DcMotor l, r, m;
-    private double COUNTS_PER_REV = 8192, WHEEL_DIAMETER = 1.96, WIDTH_BETWEEN_ENCODERS = 13.32;
+    private double COUNTS_PER_REV = 8192, WHEEL_DIAMETER = 1.96, WIDTH_BETWEEN_ENCODERS = 13.8460163056; //13.80467
 
     @Override
     public void init() {
         gyroDrive.init(hardwareMap, false);
         l = hardwareMap.dcMotor.get("i1");
         r = hardwareMap.dcMotor.get("i2");
-        m = hardwareMap.dcMotor.get("sr");
+        m = hardwareMap.dcMotor.get("sl");
 
         l.setDirection(DcMotorSimple.Direction.REVERSE);
         l.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -43,8 +43,11 @@ public class OdometryHeading extends OpMode {
                 AxesOrder.ZYX, AngleUnit.DEGREES);
         double pose = (gyroDrive.angles.firstAngle);
         telemetry.addData("IMU pose", pose);
-        double pose2 = ((ticksToInches(l.getCurrentPosition())-ticksToInches(r.getCurrentPosition()))/WIDTH_BETWEEN_ENCODERS);
-        telemetry.addData("Odometry pose", AngleWrap(Math.toDegrees(pose2)));
+        double leftEncoder = -l.getCurrentPosition();
+        double rightEncoder = r.getCurrentPosition();
+        double pose2 = ((ticksToInches(leftEncoder)-ticksToInches(rightEncoder))/WIDTH_BETWEEN_ENCODERS);
+        double actualOdoPose = AngleWrap(360 - Math.toDegrees(pose2));
+        telemetry.addData("Odometry pose", actualOdoPose);
     }
 
     public double ticksToInches(double ticks){

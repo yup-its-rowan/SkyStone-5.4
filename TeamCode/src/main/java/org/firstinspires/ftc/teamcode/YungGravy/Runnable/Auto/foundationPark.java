@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.YungGravy.AutoTeleTransition;
 
-import static org.firstinspires.ftc.teamcode.Yibbon.GyroAutoAngleTracker.saveGyroAngle;
 
 @Autonomous(name = "foundationOnbees", group = "come on")
 public class foundationPark extends LinearOpMode {

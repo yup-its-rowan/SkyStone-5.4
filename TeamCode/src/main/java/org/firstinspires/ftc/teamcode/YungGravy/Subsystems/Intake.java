@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
 
+import static org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.OdometryGyroDrive.leftEncoder;
+import static org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.OdometryGyroDrive.rightEncoder;
+
 public class Intake {
 
     enum stateToggleIntake {
@@ -25,9 +28,17 @@ public class Intake {
     public void init(HardwareMap hardwareMap){
         i1 = hardwareMap.dcMotor.get("i1");
         i2 = hardwareMap.dcMotor.get("i2");
+
+        i1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        i2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        i1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        i2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void intakeInputs(double time, boolean g1x, boolean g1y){
+        leftEncoder = i1.getCurrentPosition();
+        rightEncoder = i2.getCurrentPosition();
         this.time = time;
         this.g1x = g1x;
         this.g1y = g1y;

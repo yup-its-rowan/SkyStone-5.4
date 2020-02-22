@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
 
+import static org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains.OdometryGyroDrive.middleEncoder;
+
 public class Slides {
 
     private DcMotor s1, s2;
@@ -36,12 +38,15 @@ public class Slides {
         slideSwitch.setMode(DigitalChannel.Mode.INPUT);
         s2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         s2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        s2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        s2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         s1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         s2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void slideInputs(double g2rt, double g2lt, boolean g2lb, boolean g2rb, boolean g2x, Telemetry telemetry, double time){
+        middleEncoder = s1.getCurrentPosition();
         this.g2lt = g2lt;
         this.g2rt = g2rt;
         this.g2dl = g2lb;

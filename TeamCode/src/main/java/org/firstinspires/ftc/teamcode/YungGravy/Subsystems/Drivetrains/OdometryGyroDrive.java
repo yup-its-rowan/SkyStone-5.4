@@ -1,26 +1,21 @@
 package org.firstinspires.ftc.teamcode.YungGravy.Subsystems.Drivetrains;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.YungGravy.AutoTeleTransition;
 import org.firstinspires.ftc.teamcode.YungGravy.MotorCache;
 
-public class GyroDrive {
+import static org.firstinspires.ftc.teamcode.YungGravy.UsefulMath.AngleWrap;
+
+public class OdometryGyroDrive {
 
     private DcMotor fl, fr, bl, br;
     private double x2, y2, flPower, frPower, blPower, brPower;
     public double pose;
     public double offsetAngle = 0, startingAngle = 0;
     private double time, timeSlowReset = 0;
-    public BNO055IMU imu;
-    public Orientation angles;
     boolean telemetryEnabled = true;
     boolean autoAngle = true;
 
@@ -31,7 +26,7 @@ public class GyroDrive {
     private MotorCache blm = new MotorCache();
     private MotorCache brm = new MotorCache();
 
-    public GyroDrive(){ }
+    public OdometryGyroDrive(){ }
 
     public void init(HardwareMap hardwareMap, boolean autoAngle){
         fl = hardwareMap.dcMotor.get("fl");
@@ -39,18 +34,17 @@ public class GyroDrive {
         fr = hardwareMap.dcMotor.get("fr");
         br = hardwareMap.dcMotor.get("br");
 
+        /*
+        l = hardwareMap.dcMotor.get("i1");
+        r = hardwareMap.dcMotor.get("i2");
+        m = hardwareMap.dcMotor.get("sl");
+
+         */
+
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         this.autoAngle = autoAngle;
         this.offsetAngle = 0;
@@ -80,6 +74,8 @@ public class GyroDrive {
 
     public void drivetrainInputs(double time,  double g1lx, double g1ly, double g1rx,
                                  boolean g2lb, boolean g1back, boolean g1lb, boolean g1rb, Telemetry telemetry){
+        positionCalculation();
+
         this.time = time;
         this.g1lx = g1lx;
         this.g1ly = g1ly;
@@ -98,7 +94,25 @@ public class GyroDrive {
             leftStickBut2EncoderReset();
         }
 
+        /*
+        telemetry.addData("left", leftEncoder);
+        telemetry.addData("right", rightEncoder);
+        telemetry.addData("middle", middleEncoder);
+
+         */
+        telemetry.addData("X", globalX);
+        telemetry.addData("Y", globalY);
+        telemetry.addData("T", globalHeading);
+
+        reset();
         //telemetryDT(telemetry);
+    }
+
+    public void reset(){
+        previousHeading = globalHeading;
+        previousLeft = leftEncoder;
+        previousMid = middleEncoder;
+        previousRight = rightEncoder;
     }
 
     public void enableTelemetry(){
@@ -112,11 +126,35 @@ public class GyroDrive {
         telemetry.addData("br", br.getCurrentPosition());
     }
 
+    public static int leftEncoder, rightEncoder, middleEncoder;
+    public static double globalHeading, globalX, globalY;
+    private double previousHeading = 0, previousLeft = 0, previousRight = 0, previousMid = 0;
+
+    public void positionCalculation(){
+        double pose2 = ((ticksToInches(leftEncoder)-ticksToInches(rightEncoder))/WIDTH_BETWEEN_ENCODERS);
+        globalHeading = AngleWrap(Math.toDegrees(2*Math.PI - pose2));
+
+        double deltaHeading = globalHeading - previousHeading;
+        double deltaMiddle = middleEncoder - previousMid;
+        double adjustedMiddleEncoder = deltaMiddle - deltaHeading*-3790;
+        double deltaLeft = leftEncoder - previousLeft;
+        double deltaRight = rightEncoder - previousRight;
+        double adjustedVerticalEncoders = (deltaLeft+deltaRight)/2;
+
+        double inchesMiddle = ticksToInches(adjustedMiddleEncoder);
+        double inchesVertical = ticksToInches(adjustedVerticalEncoders);
+
+        double globalDeltaX = ((inchesMiddle*Math.cos(globalHeading))+(inchesVertical*Math.sin(globalHeading)));
+        double globalDeltaY = ((inchesVertical*Math.cos(globalHeading))-(inchesMiddle*Math.sin(globalHeading)));
+
+        globalX =+ globalDeltaX;
+        globalY =+ globalDeltaY;
+
+    }
+
     public void weBeDrivin(Telemetry telemetry){
-        this.angles   = imu.getAngularOrientation(AxesReference.INTRINSIC,
-                AxesOrder.ZYX, AngleUnit.RADIANS);
-        telemetry.addData("startingAngle", this.startingAngle);
-        this.pose = (angles.firstAngle - this.offsetAngle + this.startingAngle);
+
+        this.pose = (Math.toRadians(globalHeading) - this.offsetAngle + this.startingAngle);
         if (time > (timeSlowReset + 0.2)){
             if (this.g1back){
                 this.offsetAngle = this.pose;
@@ -160,9 +198,10 @@ public class GyroDrive {
     }
 
     public void weBeDrivin2(){
-        this.angles   = imu.getAngularOrientation(AxesReference.INTRINSIC,
-                AxesOrder.ZYX, AngleUnit.RADIANS);
-        this.pose = (angles.firstAngle - this.offsetAngle);
+        double pose2 = ((ticksToInches(leftEncoder)-ticksToInches(rightEncoder))/WIDTH_BETWEEN_ENCODERS);
+        double actualOdoPose = AngleWrap(360 - Math.toDegrees(pose2));
+
+        this.pose = (Math.toRadians(actualOdoPose) - this.offsetAngle);
         if (time > (timeSlowReset + 0.2)){
             if (g1back){
                 this.offsetAngle = this.pose;
@@ -202,7 +241,13 @@ public class GyroDrive {
         if (brm.cache(brPower)){
             br.setPower(brPower);
         }
+    }
 
+    private double TICKS_PER_ROTATION = 8192, WHEEL_DIAMETER = 1.96, WIDTH_BETWEEN_ENCODERS = 13.8460163056;
+    private double ticksToInches(double ticks){
+        double inchesPerRotation = Math.PI*WHEEL_DIAMETER;
+        double conversionTicksToInches = (inchesPerRotation/TICKS_PER_ROTATION);
+        return conversionTicksToInches*ticks;
     }
 
 }

@@ -1,28 +1,26 @@
 package org.firstinspires.ftc.teamcode.FirstOdoAutoPackage;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.FirstOdoAutoPackage.FirstOdo.globalX;
+import static org.firstinspires.ftc.teamcode.FirstOdoAutoPackage.FirstOdo.globalY;
+import static org.firstinspires.ftc.teamcode.FirstOdoAutoPackage.FirstOdo.heading;
+
 public class RobotMovement {
 
     DcMotor fl, fr, bl, br;
-    private double globalX, globalY, globalT;
 
     public RobotMovement(){}
 
-    public void motorSet(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br){
-        this.bl = bl;
-        this.br = br;
-        this.fl = fl;
-        this.fr = fr;
-    }
-
-    public void movementUpdate(double globalX, double globalY, double globalT){
-        this.globalT = globalT;
-        this.globalX = globalX;
-        this.globalY = globalY;
+    public void motorSet(HardwareMap hardwareMap){
+        fl = hardwareMap.dcMotor.get("fl");
+        bl = hardwareMap.dcMotor.get("bl");
+        fr = hardwareMap.dcMotor.get("fr");
+        br = hardwareMap.dcMotor.get("br");
     }
 
 
@@ -46,7 +44,7 @@ public class RobotMovement {
         //deltas for stuff later
         double deltaX = targetX - globalX;
         double deltaY = targetY - globalY;
-        double deltaHeading = targetHeading - globalT;
+        double deltaHeading = targetHeading - heading;
 
         //this keeps everything from breaking DO NOT REMOVE IT
         if (deltaX == 0){
@@ -62,8 +60,8 @@ public class RobotMovement {
         double snippedY = deltaY/(Math.abs(deltaX) + Math.abs(deltaY));
         double snippedHeading = Range.clip(deltaHeading/(Math.toRadians(30)), -1, 1); //30 degrees is also arbitary still cant spell it
 
-        double x2 = movementSpeed * (snippedX*Math.cos(globalT) + snippedY*Math.sin(globalT));
-        double y2 = movementSpeed * (snippedY*Math.cos(globalT) - snippedX*Math.sin(globalT));
+        double x2 = movementSpeed * (snippedX*Math.cos(heading) + snippedY*Math.sin(heading));
+        double y2 = movementSpeed * (snippedY*Math.cos(heading) - snippedX*Math.sin(heading));
         double z2 = turnSpeed * snippedHeading;
 
         double flPower = x2 + y2 + z2;
