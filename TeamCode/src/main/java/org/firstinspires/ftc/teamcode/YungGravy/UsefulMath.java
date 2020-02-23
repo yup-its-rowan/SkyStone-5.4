@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode.YungGravy;
 public final class UsefulMath {
 
     public static double AngleWrap(double angle){
-        if (angle > 360){
+        while (angle > 360){
             angle -= 360;
-        } else if (angle < 0){
+        }
+        while (angle < 0){
             angle +=360;
         }
         return angle;

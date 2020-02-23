@@ -52,6 +52,7 @@ public class OdoBot extends OpMode {
         if (enableStartingAngle == false){
             odoGyro.startingAngle = 0;
         }
+        odoGyro.start();
     }
 
     @Override

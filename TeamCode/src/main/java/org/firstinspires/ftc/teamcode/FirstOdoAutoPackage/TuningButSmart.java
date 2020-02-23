@@ -89,8 +89,6 @@ public class TuningButSmart extends OpMode {
 
         telemetry.addData("imu", pose);
 
-
-
         widthCalc();
     }
     double ticksPerRadian = 0;
@@ -98,7 +96,7 @@ public class TuningButSmart extends OpMode {
         if (eTime.time() > 0.2){
             switch (turnRobot){
                 case notThere:
-                    if (pose < Math.toRadians(90)) {
+                    if (pose < Math.toRadians(270)) {
                         fl.setPower(0.1);
                         fr.setPower(0.1);
                         bl.setPower(0.1);
@@ -113,8 +111,8 @@ public class TuningButSmart extends OpMode {
                         this.finalencoders = this.widthOfEncoders;
 
                     }
-                    double temp = (ticksToInches(rightEncoder)
-                            - ticksToInches(leftEncoder));
+                    double temp = (ticksToInches(leftEncoder)
+                            - ticksToInches(rightEncoder));
                     this.widthOfEncoders = (temp/pose);
 
                     ticksPerRadian = middleEncoder/pose;
@@ -122,11 +120,11 @@ public class TuningButSmart extends OpMode {
                     telemetry.addData("Track Width", this.widthOfEncoders);
                     break;
                 case done:
-                    temp = (ticksToInches(rightEncoder)
-                            - ticksToInches(leftEncoder));
+                    temp = (ticksToInches(leftEncoder)
+                            - ticksToInches(rightEncoder));
                     this.widthOfEncoders = (temp/pose);
                     ticksPerRadian = middleEncoder/pose;
-                    telemetry.addData("Track Width", this.finalencoders);
+                    telemetry.addData("Track Width", this.widthOfEncoders);
                     telemetry.addData("HorizontalOffsetValue", ticksPerRadian);
                     break; //-3890.664 -3785.72 -3921.23 3798.03 overall -3790
             }
