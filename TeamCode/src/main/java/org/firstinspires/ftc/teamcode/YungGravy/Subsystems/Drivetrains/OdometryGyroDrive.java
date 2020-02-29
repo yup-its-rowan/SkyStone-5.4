@@ -33,13 +33,6 @@ public class OdometryGyroDrive {
         fr = hardwareMap.dcMotor.get("fr");
         br = hardwareMap.dcMotor.get("br");
 
-        /*
-        l = hardwareMap.dcMotor.get("i1");
-        r = hardwareMap.dcMotor.get("i2");
-        m = hardwareMap.dcMotor.get("sl");
-
-         */
-
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -116,10 +109,10 @@ public class OdometryGyroDrive {
         telemetry.addData("Y", globalY);
         telemetry.addData("T", globalHeading);
 
-        reset();
+        //reset();
         //telemetryDT(telemetry);
     }
-
+    /*
     public void reset(){
         previousHeading = globalHeading;
         previousLeft = leftEncoder;
@@ -127,41 +120,40 @@ public class OdometryGyroDrive {
         previousRight = rightEncoder;
     }
 
+     */
+
     public static int leftEncoder, rightEncoder, middleEncoder;
     public static double globalHeading, globalX, globalY;
-    private double previousHeading = 0, previousLeft = 0, previousRight = 0, previousMid = 0;
+    //private double previousHeading = 0, previousLeft = 0, previousRight = 0, previousMid = 0;
 
     public void positionCalculation(){
         double actualLeft = leftEncoder - offsetL;
         double actualRight = rightEncoder - offsetR;
-        double actualMiddle = middleEncoder - offsetM;
+        //double actualMiddle = middleEncoder - offsetM;
 
         double pose2 = ((ticksToInches(actualRight)-ticksToInches(actualLeft))/WIDTH_BETWEEN_ENCODERS);
-        globalHeading = AngleWrap(Math.toDegrees(pose2));
+        globalHeading = pose2;
+        //double deltaHeading = globalHeading - previousHeading;
+        //double deltaMiddle = actualMiddle - previousMid;
+        //double adjustedMiddleEncoder = deltaMiddle - (deltaHeading*(3790));
+        //double deltaLeft = actualLeft - previousLeft;
+        //double deltaRight = actualRight - previousRight;
+        //double adjustedVerticalEncoders = (deltaLeft+deltaRight)/2;
 
-        double deltaHeading = globalHeading - previousHeading;
-        double deltaMiddle = actualMiddle - previousMid;
-        double adjustedMiddleEncoder = deltaMiddle - (deltaHeading*(3790));
-        double deltaLeft = actualLeft - previousLeft;
-        double deltaRight = actualRight - previousRight;
-        double adjustedVerticalEncoders = (deltaLeft+deltaRight)/2;
+        //double globalDeltaX = ((adjustedMiddleEncoder*Math.cos(globalHeading))+(adjustedVerticalEncoders*Math.sin(globalHeading)));
+        //double globalDeltaY = ((adjustedVerticalEncoders*Math.cos(globalHeading))-(adjustedMiddleEncoder*Math.sin(globalHeading)));
 
-        double radianHeading = Math.toRadians(globalHeading);
+        //double inchX = ticksToInches(globalDeltaX);
+        //double inchY = ticksToInches(globalDeltaY);
 
-        double globalDeltaX = ((adjustedMiddleEncoder*Math.cos(radianHeading))+(adjustedVerticalEncoders*Math.sin(radianHeading)));
-        double globalDeltaY = ((adjustedVerticalEncoders*Math.cos(radianHeading))-(adjustedMiddleEncoder*Math.sin(radianHeading)));
-
-        double inchX = ticksToInches(globalDeltaX);
-        double inchY = ticksToInches(globalDeltaY);
-
-        globalX = globalX + inchX;
-        globalY = globalY + inchY;
+        //globalX = globalX + inchX;
+        //globalY = globalY + inchY;
 
     }
 
     public void weBeDrivin(Telemetry telemetry){
 
-        double pose = (Math.toRadians(globalHeading) - this.offsetAngle + this.startingAngle);
+        double pose = (globalHeading - this.offsetAngle + this.startingAngle);
         if (time > (timeResetAngle + 0.2)){
             if (this.g1back){
                 this.offsetAngle = pose;
@@ -206,7 +198,7 @@ public class OdometryGyroDrive {
 
     public void weBeDrivin2(){
 
-        double pose = (Math.toRadians(globalHeading) - this.offsetAngle);
+        double pose = (globalHeading - this.offsetAngle);
         if (time > (timeResetAngle + 0.2)){
             if (g1back){
                 this.offsetAngle = pose;
@@ -248,7 +240,7 @@ public class OdometryGyroDrive {
         }
     }
 
-    private double TICKS_PER_ROTATION = 8192, WHEEL_DIAMETER = 1.9685, WIDTH_BETWEEN_ENCODERS = 13.9799911094;
+    private double TICKS_PER_ROTATION = 8192, WHEEL_DIAMETER = 1.9685, WIDTH_BETWEEN_ENCODERS = 14.1134159823; //14.138271276;
 
     private double ticksToInches(double ticks){
         double inchesPerRotation = Math.PI*WHEEL_DIAMETER;

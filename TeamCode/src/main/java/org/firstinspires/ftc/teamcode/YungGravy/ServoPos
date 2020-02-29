@@ -1,30 +1,47 @@
 Servos are named:
 t1, t2 - waffle trapper servos
-    no trap pos
+    not trap pos
+        t1 = 0.62
+        t2 = 0.43
+    trap pos
         t1 = 0
         t2 = 1
-    trap pos
-        t1 = 1
-        t2 = 0
 v1, v2 - v4b flip servos
     v1 = adjustable
     v2 = adjustable
 grab - v4b grab servo
     let go
-        grab = 0.7
+        grab = 0.62
     grab
         grab = 0.3
+capstone - capstone let goer
+    grab
+        cap = 0.55
+    let go
+        cap = 0.8
 abgr1, abgl1 - grab auto grab servo
     grab
-        abgr1 = 0.0
-        abgl1 = 0.9
+        r2 = 1
+        l2 = 0
     ungrab
-        abgr1 = 0.72
-        abgl1 = 0.32
+        r2 = 0.50
+        l2 = 0.69
+    undeployed
+        r2 = 0.92
+        l2 = 0.33
+    lining up
+        r2 = 0.5
+        l2 = 0.69
 abgr2, abgl2 - the flip portion of the auto grab servo
-    upwards
-        abgl2 = 0.8
-        abgr2 = 0.2
+    in
+        r1 = 0.22
+        l1 = 0.82
     out
-        abgl2 = 0.1
-        abgr2 = 0.9
+        r1 = 0.68
+        l1 = 0.38
+    undeployed
+        r1 = 0.14
+        l1 = 0.86
+    lining up
+        r1 = 0.63
+        l1 = 0.43

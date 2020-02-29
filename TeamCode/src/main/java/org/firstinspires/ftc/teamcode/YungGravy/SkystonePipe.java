@@ -20,9 +20,6 @@ public class SkystonePipe extends OpenCvPipeline {
     private static double rectHeight = 0.07;
     private static double rectWidth = 0.175;
 
-    private static double offsetX = -0.125;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-    private static double offsetY = 0.15;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
-
     private static double[] midPos = {0.325, 0.65};
     private static double[] leftPos = {0.125, 0.65};
     private static double[] rightPos = {0.525, 0.65};

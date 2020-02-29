@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-//@TeleOp(name= "RowanSksystoneDete", group="h")
+@TeleOp(name= "RowanSksystoneDete", group="h")
 public class SkystoneDetect extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

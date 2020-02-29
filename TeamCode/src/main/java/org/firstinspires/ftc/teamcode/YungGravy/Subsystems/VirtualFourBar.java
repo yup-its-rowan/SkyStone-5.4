@@ -73,7 +73,7 @@ public class VirtualFourBar {
             }
             //grab
         } else if (g2b){
-            grabpos = 0.7;
+            grabpos = 0.62;
             if (grabc.cache(grabpos)){
                 grab.setPosition(grabpos);
             }

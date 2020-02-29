@@ -43,10 +43,6 @@ public class TuningButSmart extends OpMode {
         or.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         h.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        ol.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        or.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
