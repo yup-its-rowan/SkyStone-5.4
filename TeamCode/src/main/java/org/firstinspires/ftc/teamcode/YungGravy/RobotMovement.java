@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.YungGravy;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,21 +13,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
-import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.teamcode.YungGravy.UsefulMath.AngleWrap;
 
-public class RobotMovement {
+public class RobotMovement extends LinearOpMode {
     DcMotorEx fl, fr, bl, br;
     Servo l1, l2, r1, r2, t1, t2;
     BNO055IMU imu;
-
-    private Telemetry telemetry = null;
+    OpenCvCamera phoneCam;
+    private final int rows = 640;
+    private final int cols = 480;
 
     public RobotMovement(){}
 
-    public void init(HardwareMap hardwareMap, Telemetry aTelemetry){
-        telemetry = aTelemetry;
+    @Override
+    public void runOpMode() throws InterruptedException {
         telemetry.addLine("Initializing...");
         telemetry.update();
 
@@ -62,6 +67,35 @@ public class RobotMovement {
 
         telemetry.addLine("Robot Initialized!");
         telemetry.update();
+    }
+
+    private int skystonePos = 1;
+    public int getSkystonePosWhileWaitForStart(boolean isBlue) {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        StatesSkystonePipe skystonepipey = new StatesSkystonePipe(isBlue);
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam.showFpsMeterOnViewport(false);
+        phoneCam.openCameraDevice();//open camera
+        phoneCam.setPipeline(skystonepipey);//different stages
+        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+
+
+        while (!isStarted()) {
+            if (skystonepipey.valRight == 255 && skystonepipey.valMid == 255) {
+                telemetry.addLine("Left");
+                skystonePos = 1;
+            } else if (skystonepipey.valRight == 255 && skystonepipey.valLeft == 255) {
+                telemetry.addLine("Mid");
+                skystonePos = 2;
+            } else if (skystonepipey.valMid == 255 && skystonepipey.valLeft == 255) {
+                telemetry.addLine("Right");
+                skystonePos = 3;
+            } else {
+                telemetry.addLine("Unseen");
+            }
+            telemetry.update();
+        }
+        return skystonePos;
     }
 
     public void reinit(){
@@ -117,7 +151,7 @@ public class RobotMovement {
 
     public void rightUndeployed(){
         r2.setPosition(0.92);
-        r1.setPosition(0.14);
+        r1.setPosition(0.08);
     }
 
     public void leftKeepIn(){
@@ -187,61 +221,67 @@ public class RobotMovement {
     private final static double TURN_TO_ANGLE_MAX_SPEED = 1;
 
     public void turnToAngle(double targetAngle){
+        runUsingEncoders();
 
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double leftPower, rightPower;
-        while (Math.abs(AngleWrap(positionWrappedDegrees() - targetAngle)) > TURN_TO_ANGLE_THRESHOLD){
+        while (Math.abs(AngleWrap(positionWrappedDegrees() - targetAngle)) > TURN_TO_ANGLE_THRESHOLD && opModeIsActive()){
             double errorDeg = AngleWrap(positionWrappedDegrees() - targetAngle);
             double adjustmentPower = errorDeg/100;
 
-            leftPower = Range.clip(adjustmentPower, -TURN_TO_ANGLE_MAX_SPEED, TURN_TO_ANGLE_MAX_SPEED);
-            rightPower = Range.clip(adjustmentPower, -TURN_TO_ANGLE_MAX_SPEED, TURN_TO_ANGLE_MAX_SPEED);
-
-            fl.setPower(leftPower);
-            fr.setPower(rightPower);
-            bl.setPower(leftPower);
-            br.setPower(rightPower);
+            startTurn(Range.clip(adjustmentPower, -TURN_TO_ANGLE_MAX_SPEED, TURN_TO_ANGLE_MAX_SPEED));
         }
         stopRobot();
     }
 
-    private void stopRobot(){
-        fl.setPower(0);
-        fr.setPower(0);
-        bl.setPower(0);
-        br.setPower(0);
-    }
-
-    private static final double ERROR_TICKS_FORWAED = 10;
+    private static final double ERROR_TICKS_FORWAED = 50;
     public void goForwardStraight(int tickCalc, double power, double targetAngle) {
         motorReset();
+        runUsingEncoders();
+        double dir = Math.signum(tickCalc);
+
+        while (Math.abs(fl.getCurrentPosition()) < Math.abs(tickCalc) - ERROR_TICKS_FORWAED && opModeIsActive()){
+            double errorDeg = AngleWrap(positionWrappedDegrees() - targetAngle);
+            double adjustmentPower = errorDeg/100;
+
+            startMove(power * dir, 0 , Range.clip(adjustmentPower, -.2, .2));
+        }
+        stopRobot();
+    }
+
+    public void goRightStraight(int tickCalc, double power, double targetAngle) {
+        motorReset();
+        runUsingEncoders();
+        double dir = Math.signum(tickCalc);
+
+        while (Math.abs(fl.getCurrentPosition()) < Math.abs(tickCalc) - ERROR_TICKS_FORWAED && opModeIsActive()){
+            double errorDeg = AngleWrap(positionWrappedDegrees() - targetAngle);
+            double adjustmentPower = errorDeg/100;
+
+            startMove(0, dir * power, Range.clip(adjustmentPower, -.2, .2));
+        }
+        stopRobot();
+    }
+
+    private void runUsingEncoders() {
         fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        double leftPower = power;
-        double rightPower = -power;
+    public void goForwardStraightRamped(int tickCalc, double minPower, double maxPower, double rampDistanceTicks , double targetAngle) {
+        motorReset();
+        runUsingEncoders();
+        double dir = Math.signum(tickCalc);
 
-        fl.setPower(leftPower);
-        fr.setPower(rightPower);
-        bl.setPower(leftPower);
-        br.setPower(rightPower);
-        while (Math.abs(fl.getCurrentPosition()) < Math.abs(tickCalc) - ERROR_TICKS_FORWAED){
+        while (Math.abs(fl.getCurrentPosition()) < Math.abs(tickCalc) - ERROR_TICKS_FORWAED && opModeIsActive()){
             double errorDeg = AngleWrap(positionWrappedDegrees() - targetAngle);
             double adjustmentPower = errorDeg/100;
 
-            leftPower = power + Range.clip(adjustmentPower, -.2, .2);
-            rightPower = -power + Range.clip(adjustmentPower, -.2, .2);
+            double rampUpPower = minPower + (maxPower-minPower) * (Math.abs(fl.getCurrentPosition())/rampDistanceTicks);
+            double rampDownPower = minPower + (maxPower-minPower) * (Math.abs(tickCalc - fl.getCurrentPosition())/rampDistanceTicks);
+            double power = Range.clip(Math.min(rampUpPower, rampDownPower), minPower, maxPower);
 
-            fl.setPower(leftPower);
-            fr.setPower(rightPower);
-            bl.setPower(leftPower);
-            br.setPower(rightPower);
+            startMove(dir * power, 0 , Range.clip(adjustmentPower, -.2, .2));
         }
         stopRobot();
     }
@@ -354,5 +394,41 @@ public class RobotMovement {
         double bottom = Math.PI * 2.95276;
         double ticks = top/bottom;
         return (int)ticks;
+    }
+
+
+    private void startDrive(double power) {
+        startMove(power, 0, 0);
+    }
+
+    private void startStrafe(double power) {
+        startMove(0, power, 0);
+    }
+
+    private void startTurn(double power) {
+        startMove(0, 0, power);
+    }
+
+    private void startMove(double drive, double strafe, double turn) {
+        startMove(drive, strafe, turn, 1);
+    }
+
+    private void startMove(double drive, double strafe, double turn, double scale) {
+        double frontLeft = drive + strafe + turn;
+        double frontRight = -drive + strafe + turn;
+        double backLeft = drive - strafe + turn;
+        double backRight = -drive - strafe + turn;
+
+        double maxValue = Math.max( Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(backLeft), Math.abs(backRight)));
+        double divAmount = maxValue > 1 ? maxValue : 1;
+
+        fl.setPower(frontLeft / divAmount * scale);
+        fr.setPower(frontRight / divAmount * scale);
+        bl.setPower(backLeft / divAmount * scale);
+        br.setPower(backRight / divAmount * scale);
+    }
+
+    private void stopRobot(){
+        startMove(0, 0, 0);
     }
 }

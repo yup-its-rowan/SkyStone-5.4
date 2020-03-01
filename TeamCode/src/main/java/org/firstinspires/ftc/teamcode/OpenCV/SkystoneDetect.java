@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.YungGravy.StatesSkystonePipe;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -18,7 +19,7 @@ public class SkystoneDetect extends OpMode {
     private String position;
 
     OpenCvCamera phoneCam;
-    SkystonePipe skystonepipey = new SkystonePipe();
+    StatesSkystonePipe skystonepipey = new StatesSkystonePipe(true);
 
 
     @Override

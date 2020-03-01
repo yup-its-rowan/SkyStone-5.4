@@ -11,7 +11,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkystonePipe extends OpenCvPipeline {
+public class StatesSkystonePipe extends OpenCvPipeline {
 
     public static int valMid = -1;
     public static int valLeft = -1;
@@ -20,9 +20,12 @@ public class SkystonePipe extends OpenCvPipeline {
     private static double rectHeight = 0.07;
     private static double rectWidth = 0.175;
 
-    private static double[] midPos = {0.325, 0.65};
-    private static double[] leftPos = {0.125, 0.65};
-    private static double[] rightPos = {0.525, 0.65};
+    private static final double BLUE_OFFSET_X = 0.18;
+    private static final double RED_OFFSET_X = 0.02;
+
+    private double[] midPos = {0.325, 0.65};
+    private double[] leftPos = {0.125, 0.65};
+    private double[] rightPos = {0.525, 0.65};
     //moves all rectangles right or left by amount. units are in ratio to monitor
 
     Mat yCbCrChan2Mat = new Mat();
@@ -39,6 +42,18 @@ public class SkystonePipe extends OpenCvPipeline {
 
     private filterStage visibleStage = filterStage.detection;
     private filterStage[] stages = filterStage.values();
+
+    public StatesSkystonePipe(boolean isBlue){
+        if (isBlue) {
+            midPos[0] += BLUE_OFFSET_X;
+            leftPos[0] += BLUE_OFFSET_X;
+            rightPos[0] += BLUE_OFFSET_X;
+        } else {
+            midPos[0] += RED_OFFSET_X;
+            leftPos[0] += RED_OFFSET_X;
+            rightPos[0] += RED_OFFSET_X;
+        }
+    }
 
     @Override
     public void onViewportTapped() {

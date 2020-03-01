@@ -16,6 +16,11 @@ public class WaffleTrapper {
     private stateToggleWaffleTrapper toggleWaffleTrapper
             = stateToggleWaffleTrapper.trapperUp;
 
+    enum cappy {
+        starty, done
+    }
+
+    private cappy capStuff = cappy.starty;
     private boolean g1ddown = false, g1dup = false, g2LeftStick = false;
     private ServoCache t1c = new ServoCache();
     private ServoCache t2c = new ServoCache();
@@ -37,6 +42,14 @@ public class WaffleTrapper {
         this.g2LeftStick = leftStick2;
         waffleToggle();
         capTog();
+        switch (capStuff){
+            case starty:
+                cap.setPosition(0);
+                capStuff = cappy.done;
+                break;
+            case done:
+                break;
+        }
     }
     private double t1p = 0, t2p = 0, capE = 0;
 
@@ -64,14 +77,9 @@ public class WaffleTrapper {
 
     private void capTog(){
         if (g2LeftStick == false){
-            capE = 0.55;
+            cap.setPosition(0);
         } else if (g2LeftStick == true){
-            capE = 0.8;
+            cap.setPosition(0.25);
         }
-
-        if (capc.cache(capE)){
-            cap.setPosition(capE);
-        }
-
     }
 }

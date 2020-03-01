@@ -58,7 +58,8 @@ public class Slides {
     int zeroPoint = 0;
     private double s1P = 0;
     private double s2P = 0;
-    private double autoHeight = 1, capturedTime = 0, capturedTime2 = 0;
+    private int autoHeight = 1;
+    private double capturedTime = 0, capturedTime2 = 0;
 
     public void slideCheck2(Telemetry telemetry){
         if (g2rt > 0.1){
@@ -76,7 +77,7 @@ public class Slides {
             antiGravCode();
         }
 
-        telemetry.addData("slidecoders", slideHeight());
+        //telemetry.addData("slidecoders", slideHeight());
     }
 
     double savedSlideHeight = 0, savedSlideHeight2 = 0;
@@ -198,7 +199,7 @@ public class Slides {
             s2.setPower(s2P);
         }
 
-        telemetry.addData("slidecoders", slideHeight());
+        //telemetry.addData("slidecoders", slideHeight());
         telemetry.addData("blockAuto", autoHeight);
         telemetry.addData("state", stateOfDaSlides);
 

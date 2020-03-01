@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.YungGravy.Runnable.Tele;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.YungGravy.RandomTelemetry;
+import org.firstinspires.ftc.teamcode.YungGravy.Robot.ActualGyroBot;
 import org.firstinspires.ftc.teamcode.YungGravy.Robot.OdoBot;
 
 @TeleOp(name = "RoadToStates", group = "eee")
-public class RoadToStates extends OdoBot {
+public class RoadToStates extends ActualGyroBot {
 
     String teleMessage = RandomTelemetry.RandomTelemetry();
     ElapsedTime eTimee = new ElapsedTime();
